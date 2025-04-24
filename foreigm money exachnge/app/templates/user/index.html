@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {%if messages%}
+    {%for n in messages %}
+    {%if n.tags == "success" %}
+    <input type="hidden" value="{{ n }}" id="successPoint">
+    {% endif %}
+    {%if n.tags == "info" %}
+    <input type="hidden" value="{{ n }}" id="idStorage">
+    {% endif %}
+
+
+    {%endfor%}
+    <script>
+        id = document.getElementById('idStorage').value
+        alert(document.getElementById('successPoint').value)
+        sessionStorage.setItem('fromData', JSON.stringify({ 'id': id, 'type': 'user' }))
+    </script>
+    {%endif%}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+        rel="stylesheet">
+
+    <script>
+        var idPoint = 0
+        window.onload = () => {
+             {
+
+                    const data = JSON.parse(sessionStorage.getItem('fromData'))
+                    if (data) {
+                        const { id, type } = data
+                        idPoint = parseInt(id)
+                        if (type != "user") {
+                        
+                            window.location.href = '/'
+                        }
+                    } else {
+                        window.location.href = '/'
+                    }
+                }
+            }
+        function historyPoint() {
+            
+            window.location.href = `/transactions?id=${idPoint}`
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Page</title>
+    <link rel="stylesheet" href="/static/css/admin.css">
+
+</head>
+
+<body>
+    <style>
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .card-header {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            color: #333;
+        }
+
+        .card-content {
+            display: flex;
+            justify-content: space-between;
+            font-size: 16px;
+            color: #555;
+        }
+
+        .card-footer {
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+            margin-top: 15px;
+        }
+
+        .profile-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .profile-card img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+        }
+
+        .profile-card .name {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .profile-card .info {
+            font-size: 16px;
+            color: #555;
+            width: 100%;
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .profile-card .info span {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .profile-card .info span label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .profile-card .balance {
+            font-size: 18px;
+            font-weight: bold;
+            color: #4caf50;
+            margin-top: 15px;
+        }
+
+        .profile-card .currency {
+            font-size: 16px;
+            color: #777;
+        }
+
+        .add-balance-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4caf50;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .add-balance-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Dialog Box Styles */
+        .dialog-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dialog-box {
+            background-color: white;
+            padding: 20px;
+            width: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .dialog-box input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .dialog-box button {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .dialog-box button:hover {
+            background-color: #45a049;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            border: none;
+            font-size: 18px;
+            color: #888;
+            cursor: pointer;
+        }
+    </style>
+    <header>
+        <nav class="navbar">
+            <div class="titleText">
+                <a href="#">Currency Exchange</a>
+            </div>
+            <ul class="nav-links">
+                <li><a class="nav-links-active" style="color: black;" href="#">Profile</a></li>
+                <li><a href="/exchanger">Exchange</a></li>
+                <li><a onclick="{
+                    historyPoint()}">History</a></li>
+                <li><a onclick="{
+                    sessionStorage.removeItem('fromData')
+                    window.location.href = '/'
+                }"><img src="/static/img/logout.svg" alt=""> Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container2" style="grid-template-columns: repeat(2,1fr);">
+        <p>Currencies </p>
+    </div>
+    <div class="container" style="grid-template-columns: repeat(2,1fr);">
+        <div class="commonrow" style="height: fit-content">
+            {%for cur in currency %}
+            <div class="card">
+                <div class="card-content">
+                    <span> <b>CRN Name:</b></span>
+                    <span>{{cur.name}}</span>
+                </div>
+                <div class="card-content">
+                    <span><b>Exchange Rate:</b></span>
+                    <span>{{cur.exRate}}</span>
+                </div>
+            </div>
+            {%endfor%}
+        </div>
+        <div class="commonrow"
+            style="display: flex;justify-content: center;background-color: transparent;box-shadow: none;">
+            <div class="profile-card" id="profile-card">
+                <!-- Placeholder for profile image -->
+                <img src="https://frappecloud.com/files/user.png" alt="Profile Picture">
+
+            </div>
+        </div>
+    </div>
+    <div class="dialog-overlay" id="dialogOverlay">
+        <div class="dialog-box">
+            <form action="/updateBalance/" method="post">
+                {% csrf_token %}
+                <button class="close-btn" onclick="closeDialog()">×</button>
+                <h3>Add Balance</h3>
+                <input type="hidden" id="idView" name="id" value="0">
+                <input type="number" id="balanceInput" style="width: fit-content;" placeholder="Enter new balance"
+                    name="bal" required min="0">
+                <button type="submit">Add Balance</button>
+            </form>
+        </div>
+    </div>
+</body>
+<script>
+    const data = sessionStorage.getItem('fromData')
+    const { id, type } = JSON.parse(data)
+    const profile = document.getElementById('profile-card')
+    fetch(`/profile?id=${id}`).then(view => view.json()).then(viewPoint => {
+        profile.innerHTML = profile.innerHTML + `
+                 <div class="name">${viewPoint.uname}</div>
+                <div class="info">
+                    <span><label>First Name:</label>${viewPoint.fname}</span>
+                    <span><label>Email:</label> ${viewPoint.email}</span>
+                    <span><label>Username:</label>${viewPoint.uname}</span>
+                    <span><label>Account Status:</label> ${viewPoint.check}</span>
+                    <div class="balance">
+                    Balance: ${viewPoint.balance}
+                </div>
+                <div class="currency" >
+                    Currency: ${viewPoint.crr}
+                </div>
+                        <button class="add-balance-btn" onclick="openDialog(${id})">Add Balance</button>
+                </div>`
+    })
+    function openDialog(id) {
+        document.getElementById('idView').value = id
+        document.getElementById('dialogOverlay').style.display = 'flex';
+    }
+
+    function closeDialog() {
+        document.getElementById('dialogOverlay').style.display = 'none';
+    }
+
+    function addBalance() {
+        const balanceInput = document.getElementById('balanceInput').value;
+        const balanceDisplay = document.getElementById('balanceDisplay');
+
+        if (!isNaN(balanceInput) && balanceInput !== '') {
+
+            balanceDisplay.innerHTML = 'Balance: $' + parseFloat(balanceInput).toFixed(2);
+
+            closeDialog();
+            document.getElementById('balanceInput').value = '';
+        } else {
+            alert('Please enter a valid balance.');
+        }
+    }
+</script>
+
+</html>

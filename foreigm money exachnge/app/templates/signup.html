@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign up</title>
+    <script>
+        (function(){
+            const form = JSON.parse(sessionStorage.getItem('fromData'));
+            if(form) {
+                const { id, type } = form
+                if (type == "admin") {
+                    window.location.href = 'adminView/'
+                } else if (type == "user") {
+                    window.location.href = 'userHome/'
+                }
+            }
+        })()
+    </script>
+</head>
+
+
+<body>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+        }
+
+        .signup-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 450px;
+            max-width: 90%;
+            padding: 40px;
+            margin: 20px 0;
+        }
+
+        .signup-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .signup-header h1 {
+            color: #2c3e50;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .signup-header p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .signup-form .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .signup-form label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .signup-form input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .signup-form input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .password-hint {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        .terms {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+        }
+
+        .terms input {
+            width: auto;
+            margin-right: 10px;
+        }
+
+        .terms label {
+            margin-bottom: 0;
+            font-weight: normal;
+            color: #34495e;
+        }
+
+        .terms a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .terms a:hover {
+            text-decoration: underline;
+        }
+
+        .signup-button {
+            width: 100%;
+            padding: 14px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .signup-button:hover {
+            background-color: #27ae60;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            justify-content: center;
+            font-size: 14px;
+            display: flex;
+            color: #7f8c8d;
+        }
+
+        .login-link p {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link p:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .signup-container {
+                padding: 30px 20px;
+            }
+
+            .signup-header h1 {
+                font-size: 24px;
+            }
+        }
+
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .toast {
+            display: none;
+            background-color: #4caf50;
+            color: #fff;
+            border-radius: 8px;
+            padding: 12px 20px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transform: translateX(100%);
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            opacity: 0;
+        }
+        .fancy-select {
+            position: relative;
+            width: 200px;
+        }
+
+        .fancy-select select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .fancy-select::after {
+            content: '▼';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            color: #333;
+            pointer-events: none;
+        }
+
+        .fancy-select select:hover {
+            border-color: #007bff;
+        }
+
+        .fancy-select select:focus {
+            border-color: #0056b3;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        .toast.show {
+            display: block;
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background-color: #4caf50;
+        }
+
+        .toast.error {
+            background-color: #f44336;
+        }
+
+        .toast.warning {
+            background-color: #ff9800;
+        }
+
+        .toast .toast-message {
+            font-weight: bold;
+        }
+
+        .toast .toast-close {
+            margin-left: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #fff;
+        }
+        .backPoint {
+            position: absolute;
+            z-index: 100;
+            top: 100px;
+            left: 100px;
+        }
+
+
+    </style>
+        <div class="backPoint" onclick="history.back()">
+            <img src="/static/img/back.svg" style="width: 50px;height: 50px;" alt="">
+        </div>
+    <div class="signup-container">
+        <div class="signup-header">
+            <h1>Create Account</h1>
+            <p>Join us today! Fill in your details to get started.</p>
+        </div>
+        {% if messages %}
+        {%for mes in messages%}
+        <input type="hidden" id="nothing" value="{{mes}}">
+       
+        {% endfor %}
+        <script>
+            alert(document.getElementById('nothing').value)
+        </script>
+        {% endif %}
+
+
+
+        <form class="signup-form" action="/signUpSubmit/" method="POST">
+            {% csrf_token%}
+            <div class="form-group">
+                <label for="fullname">Full Name</label>
+                <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+            <div class="fancy-select">
+                <label for="crn">CRN Type</label>
+                <select required name="option" style="margin-bottom: 10px;">
+                    {%for dat in name%}
+                    <option value="{{dat.name}}">{{dat.name}}</option>
+                    {%endfor%}
+
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Choose a username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Create a password" required>
+            </div>
+
+            
+            <div class="form-group terms" style="display: none;">
+                <input type="checkbox" id="terms" name="terms">
+                <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy
+                        Policy</a></label>
+            </div>
+
+            <button type="submit" class="signup-button">Create Account</button>
+
+            <div class="login-link">
+                Already have an account? &nbsp; <p onclick="history.back()">Log in</a>
+            </div>
+        </form>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,149 @@
+body {
+    margin: 0px;
+    padding: 0px;
+    background-color: #fcecec;
+    font-family: "Open Sans", sans-serif;
+}
+
+
+input {
+    padding: 12px 20px;
+    font-size: 16px;
+    color: #333;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.cardView{
+    padding: 10px;
+    margin: 20px;
+    font-size: 12.5px;
+}
+
+.cardView button{
+    background-color: rgba(0, 128, 0, 0.884);
+    border-radius: 20px;
+    color: white;
+}
+
+
+form{
+    padding: 0px;
+    margin: 0px;
+}
+.container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 10px;
+    
+    gap: 20px;
+    background: transparent;
+}
+.container2{
+ 
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding:0px 10px;
+    gap: 20px;
+}
+
+.commonrow,.container2 p {
+    padding: 10px;
+    box-shadow: 2px 2px 2px 2px #00000060;
+    background-color: #fff;
+    border-radius: 20px;
+}
+
+.commonrow{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    max-height: 70vh;
+    width: 90%;
+    scroll-behavior: smooth;
+    overflow: scroll;
+}
+.commonrow::-webkit-scrollbar{
+    width: 0px;
+    height: 0px;
+}
+.container2 p{
+    width: fit-content;
+}
+
+.navbar {
+    display: grid;
+    color: white;
+    padding: 20px;
+    background-color: #2f3d7e;
+    text-decoration: none;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.navbar a {
+    color: white;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.titleText {
+    display: flex;
+    font-size: 30px;
+    justify-content: start;
+    text-align: center;
+    align-items: center;
+}
+
+.nav-links {
+    display: flex;
+    justify-content: end;
+    padding-right: 30px;
+}
+
+.nav-links a {
+    padding: 5px 20px;
+    transition: 100ms;
+}
+
+.nav-links a:hover{
+    
+    background-color: #fff;
+    box-shadow: 2px 2px 2px 2px #000;
+    color: black;
+    border-radius: 20px;
+}
+.nav-links a:hover  img {
+    
+    filter:grayscale(1);
+}
+.nav-links-active {
+    background-color: #fff;
+    box-shadow: 2px 2px 2px 2px #000;
+    color: black;
+    border-radius: 20px;
+}
+
+.nav-links img {
+    width: 20px;
+    height: 20px;
+    filter: brightness(0) invert(1);
+}
+
+
+
+
+
+.navbar ul {
+    display: flex;
+    gap: 60px;
+    text-decoration: none;
+}
+
+.navbar li {
+    text-decoration: none;
+    list-style-type: none;
+}

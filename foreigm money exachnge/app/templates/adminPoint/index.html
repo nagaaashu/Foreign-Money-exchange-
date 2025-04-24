@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+        rel="stylesheet">
+
+    <script>
+        //Session Storage
+        (function () {
+            const data = JSON.parse(sessionStorage.getItem('fromData'))
+            if (data) {
+                const { id, type } = data
+                if (type != "admin") {
+                    window.location.href = '/'
+                }
+            }else{
+                    window.location.href = '/'
+            }
+        })()
+    </script>
+    <link rel="stylesheet" href="/static/css/admin.css">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Pages</title>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="titleText">
+                <a href="#">Currency Exchange</a>
+            </div>
+            <ul class="nav-links">
+                <li><a class="nav-links-active" style="color: black;" href="#">User</a></li>
+                <li><a href="/currencies">Curencies</a></li>
+                <li><a href="/adminTransactions">History</a></li>
+                <li><a onclick="{
+                    sessionStorage.removeItem('fromData')
+                    window.location.href = '/'
+                }"><img src="/static/img/logout.svg" alt=""> Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container2">
+        <p>Pending to Verify</p>
+        <p>Verified</p>
+        <p>Blocked</p>
+    </div>
+    <div class="container">
+
+        {%if pending%}
+        <div class="commonrow">
+            {%for d in pending%}
+            <div class="cardView">
+                <form action="/updateVerify/" method="post" id="updatePost">
+
+                    {% csrf_token %}
+                    <b>User Name : </b>{{d.uname}} <br>
+                    <b>Full Name : </b>{{d.fname}} <br>
+                    <b>Email-Id : </b>{{d.email}}
+                    <br>
+                    <input type="hidden" name="id" id="viewId">
+                    <input type="hidden" name="status" id="status">
+                    <div style="background-color: black;height: 0.8px;margin: 10px;"> </div>
+                    <div style="display: flex;justify-content: end;gap: 10px;">
+                        <button onclick="setUpdater('{{d.id}}','Verified')" type="button" >Verified</button>
+                        <button type="button" style="background-color: red;color: white;" 
+                        onclick="setUpdater('{{d.id}}','Blocked')">Blocked</button>
+                    </div>
+                </form>
+            </div>
+
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="display: flex;justify-content: center;">
+            <img src="https://cdn.dribbble.com/userupload/22517350/file/original-d19124353c32b762bf868843436acb65.png?resize=752x&vertical=center"
+            style="width: 200px;height: 200px;" alt="" srcset="">
+        </div>
+        {%endif%}
+
+        {%if verified%}
+        <div class="commonrow">
+            {%for d in verified%}
+            <div class="cardView">
+                <form action="/updateVerify/" method="post" id="updatePost">
+
+                    {% csrf_token %}
+                    <b>User Name : </b>{{d.uname}} <br>
+                    <b>Full Name : </b>{{d.fname}} <br>
+                    <b>Email-Id : </b>{{d.email}}
+                    <br>
+                    <input type="hidden" name="id" id="viewId">
+                    <input type="hidden" name="status" id="status">
+                    <div style="background-color: black;height: 0.8px;margin: 10px;"> </div>
+                    <div style="display: flex;justify-content: end;gap: 10px;">
+                        <button type="button" style="background-color: red;color: white;" 
+                        onclick="setUpdater('{{d.id}}','Blocked')">Blocked</button>
+              
+                    </div>
+                </form>
+            </div>
+
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="display: flex;justify-content: center;">
+            <img src="https://cdn.dribbble.com/userupload/22517350/file/original-d19124353c32b762bf868843436acb65.png?resize=752x&vertical=center"
+            style="width: 200px;height: 200px;" alt="" srcset="">
+        </div>
+        {%endif%}
+
+        {%if blocked%}
+        <div class="commonrow">
+            {%for d in blocked%}
+            <div class="cardView">
+                <form action="/updateVerify/" method="post" id="updatePost">
+
+                    {% csrf_token %}
+                    <b>User Name : </b>{{d.uname}} <br>
+                    <b>Full Name : </b>{{d.fname}} <br>
+                    <b>Email-Id : </b>{{d.email}}
+                    <br>
+                    <input type="hidden" name="id" id="viewId">
+                    <input type="hidden" name="status" id="status">
+                    <div style="background-color: black;height: 0.8px;margin: 10px;"> </div>
+                    <div style="display: flex;justify-content: end;gap: 10px;">
+                        <button onclick="setUpdater('{{d.id}}','Verified')" type="button" >Verified</button>
+                    </div>
+                </form>
+            </div>
+
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="display: flex;justify-content: center;">
+            <img src="https://cdn.dribbble.com/userupload/22517350/file/original-d19124353c32b762bf868843436acb65.png?resize=752x&vertical=center"
+            style="width: 200px;height: 200px;" alt="" srcset="">
+        </div>
+        {%endif%}
+
+    </div>
+
+
+</body>
+<script>
+    function setUpdater(id,status){
+        
+        document.getElementById('viewId').value=id
+        document.getElementById('status').value=status
+        document.getElementById('updatePost').submit()
+    }
+</script>
+
+</html>

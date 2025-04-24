@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+        rel="stylesheet">
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Page</title>
+    <link rel="stylesheet" href="/static/css/admin.css">
+
+</head>
+
+<body>
+    <style>
+        .point {
+            display: flex;
+            padding: 20px;
+            background-color: transparent;
+            justify-content: center;
+        }
+
+        .transaction-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            overflow: hidden;
+            margin: 10px;
+        }
+
+        .card-header {
+            background-color: #4a6cf7;
+            color: white;
+            padding: 16px 20px;
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .system-id {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .transaction-field {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .transaction-field:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .field-label {
+            color: #666;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .field-value {
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .user-id {
+            color: #4a6cf7;
+        }
+
+        .amount {
+            color: #4CAF50;
+            font-size: 18px;
+        }
+
+        .status-pending {
+            color: #FF9800;
+            background-color: #FFF3E0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .status-completed {
+            color: #4CAF50;
+            background-color: #E8F5E9;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .status-failed {
+            color: #F44336;
+            background-color: #FFEBEE;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 20px;
+            margin: 10px;
+            justify-content: center;
+        }
+
+        .button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .accept {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .accept:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .reject {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .reject:hover {
+            background-color: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        .button:active {
+            transform: translateY(1px);
+        }
+    </style>
+    <header>
+        <nav class="navbar">
+            <div class="titleText">
+                <a href="#">Currency Exchange</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/">User</a></li>
+                <li><a href="/currencies">Curencies</a></li>
+                <li><a class="nav-links-active" style="color: black;">History</a></li>
+                <li><a onclick="{
+                    sessionStorage.removeItem('fromData')
+                    window.location.href = '/'
+                }"><img src="/static/img/logout.svg" alt=""> Logout</a></li>
+            </ul>
+        </nav>
+        </nav>
+    </header>
+    <div class="container2">
+        <p>Transactions</p>
+    </div>
+    <div class="point">
+        <div class="commonrow"
+            style="display: grid;width: fit-content; grid-template-columns: repeat(5,1fr);gap: 20px;">
+            {%if data %}
+            {%for use in data%}
+            <div class="transaction-card">
+                <div class="card-header">
+                    Transaction Details
+                    <span class="system-id" id="id">ID: #{{use.id}}</span>
+                </div>
+                <div class="card-body">
+                    <div class="transaction-field">
+                        <span class="field-label">User ID</span>
+                        <span class="field-value user-id" id="userid">{{use.userids}}</span>
+                    </div>
+                    <div class="transaction-field">
+                        <span class="field-label">Amount</span>
+                        <span class="field-value amount" id="amount">{{use.amounts}} {{use.currency}}</span>
+                    </div>
+                    <div class="transaction-field">
+                        <span class="field-label">Status</span>
+                        <span class="field-value status-pending" id="status">{{use.statuses}}</span>
+                    </div>
+                    <div class="transaction-field">
+                        <span class="field-label">Date</span>
+                        <span class="field-value" id="datevalues">{{use.dateValues}}</span>
+                    </div>
+
+                    {% if use.statuses == "Pending" %}
+                    <form action="/updateTransaction/" method="post" id="transaction-form-{{ use.id }}">
+                        {% csrf_token %}
+                        <input type="hidden" name="transaction_id" value="{{ use.id }}">
+                        <input type="hidden" name="action" id="action-{{ use.id }}">
+                        <input type="hidden" name="crr" id="crr-{{ use.id }}">
+                        <div class="button-container">
+                            <button type="button" class="button accept"
+                                onclick="setAction('Accept', '{{ use.id }}')">Accept</button>
+                            <button type="button" class="button reject"
+                                onclick="setAction('Reject', '{{ use.id }}','{{use.currency}}')">Reject</button>
+                        </div>
+                    </form>
+                    {% endif %}
+
+
+                </div>
+            </div>
+            {%endfor%}
+            {%else%}
+            <img src="https://user-images.githubusercontent.com/4266087/128597291-ede1aacb-a687-4268-8390-18b84ff6ce44.png"
+                alt="" srcset="">
+            {%endif%}
+        </div>
+    </div>
+
+</body>
+<script>
+     function setAction(action, transactionId,viewTr) {
+        var form = document.getElementById('transaction-form-' + transactionId);
+        var actionInput = document.getElementById('action-' + transactionId);
+        var crr=document.getElementById('crr-'+transactionId)
+        actionInput.value = action;
+        crr.value=viewTr;
+        form.submit();
+    }
+</script>
+
+
+</html>

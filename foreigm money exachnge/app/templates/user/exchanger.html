@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+        rel="stylesheet">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Page</title>
+    <link rel="stylesheet" href="/static/css/admin.css">
+
+</head>
+
+<body>
+    <style>
+        .point {
+            display: flex;
+            padding: 20px;
+            margin-top: 5%;
+            background-color: transparent;
+            justify-content: center;
+        }
+
+        .fancy-select {
+            position: relative;
+            width: 200px;
+        }
+
+        .fancy-select select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .fancy-select::after {
+            content: '▼';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10px;
+            color: #333;
+            pointer-events: none;
+        }
+
+        .btn-professional {
+            padding: 12px 30px;
+            font-size: 10px;
+            font-weight: 100;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(45deg, #6c7bff, #5578e2);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn-professional:hover {
+            background: linear-gradient(45deg, #5578e2, #6c7bff);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn-professional:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn-professional:focus {
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(83, 151, 255, 0.5);
+        }
+    </style>
+    <header>
+        <nav class="navbar">
+            <div class="titleText">
+                <a href="#">Currency Exchange</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/">Profile</a></li>
+                <li><a class="nav-links-active" style="color: black;" href="#">Exchange</a></li>
+                <li><a onclick="{historyPoint()}">History</a></li>
+                <li><a onclick="{
+                    sessionStorage.removeItem('fromData')
+                    window.location.href = '/'
+                    }"><img src="/static/img/logout.svg" alt=""> Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="point">
+
+        <div class="commonrow" style="display: flex;width: fit-content;">
+            <div>
+                <form action="/addTransaction/" method="post">
+                    {%csrf_token%}
+                    <p>You're Currency</p>
+                    <input type="number" name="amount" placeholder="Price in" id="priceValues" oninput="changer(this)"
+                        required>
+                    <input type="hidden" name="id" id="idViewPoint">
+                    <div style="justify-content: center;display: flex;">
+                        <p>TO</p>
+                    </div>
+                    <div class="fancy-select" style="width: 100%;">
+                        <label for="crn" style="font-weight: bold;">CRN</label>
+                        <select required name="option" style="margin-bottom: 10px;" id="OthRate">
+                            {%for dat in currency%}
+                            <option value="{{dat.id}},{{dat.name}},{{dat.exRate}}">{{dat.name}}</option>
+                            {%endfor%}
+                        </select>
+                    </div>
+                    <p id="suggest"></p>
+                    <div style="display: flex;justify-content: end;">
+                        <button type="submit" class="btn-professional">Exchange</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+<script>
+
+
+
+
+    const suggest = document.getElementById('suggest')
+    var priceValues = document.getElementById('priceValues')
+    function changer(event) {
+        event = priceValues
+        const value = document.getElementById('OthRate').value
+        const [id, name, exrate] = value.split(',')
+        const realBal = parseInt(event.value)
+        var total = realBal * parseInt(exrate)
+
+        if (realBal >= balance) {
+            suggest.innerText = "Please enter the Amount Below your Wallet"
+        } else if (crr == name) {
+            suggest.innerText = ""
+            suggest.innerHTML = `<small><b>Ex Change Rate :</b> ${exrate}%<br>
+                <b>Estimated :</b> ${event.value}/- (${crr})<br>
+                                    </small>`
+        } else {
+            suggest.innerText = ""
+            if (isNaN(total)) {
+                total = 0
+            }
+            suggest.innerHTML = `<small><b>Ex Change Rate :</b> ${exrate}%<br>
+                <b>Estimated :</b> ${total}/- (${crr})<br>
+                                    </small>`
+        }
+    }
+    var crr = ""
+    var balance = 0
+    const idViewPoint = document.getElementById('idViewPoint')
+
+
+    window.onload = () => {
+        const data = JSON.parse(sessionStorage.getItem('fromData'))
+        const { id, type } = data
+        idViewPoint.value = id
+        fetch(`/profile?id=${id}`).then(thenview => thenview.json()).then(portion => {
+            balance = portion.balance
+            crr = portion.crr
+        })
+        
+        
+        if (data) {
+            const { id, type } = data
+            idPoint = parseInt(id)
+            if (type != "user") {
+
+                window.location.href = '/'
+            }
+        } else {
+            window.location.href = '/'
+        }
+
+    }
+
+    document.getElementById('OthRate').addEventListener('change', () => {
+        changer("fdj")
+    })
+   
+
+
+
+ var idPoint = 0
+   
+    function historyPoint() {
+        window.location.href = `/transactions?id=${idPoint}`
+    }
+    
+
+
+
+
+
+
+
+</script>
+
+</html>

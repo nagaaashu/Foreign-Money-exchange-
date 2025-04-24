@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Money Exchange</title>
+    <script>
+        (function(){
+            const form = JSON.parse(sessionStorage.getItem('fromData'));
+            if(form) {
+                const { id, type } = form
+                if (type == "admin") {
+                    window.location.href = 'adminView/'
+                } else if (type == "user") {
+                    window.location.href = 'userHome/'
+                }
+            }
+        })()
+    </script>
+</head>
+
+<body>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(rgba(0, 0, 0, 0.747), rgba(0, 0, 0, 0.397)), url(/static/img/image.png);
+        }
+
+        .login-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        p {
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .backPoint {
+            position: absolute;
+            z-index: 100;
+            top: 100px;
+            left: 100px;
+        }
+
+        .backPoint img:hover {
+            filter: invert(1) brightness(1);
+        }
+
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .toast {
+            display: none;
+            background-color: #4caf50;
+            color: #fff;
+            border-radius: 8px;
+            padding: 12px 20px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transform: translateX(100%);
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            opacity: 0;
+        }
+
+        .toast.show {
+            display: block;
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background-color: #4caf50;
+        }
+
+        .toast.error {
+            background-color: #f44336;
+        }
+
+        .toast.warning {
+            background-color: #ff9800;
+        }
+
+        .toast .toast-message {
+            font-weight: bold;
+        }
+
+        .toast .toast-close {
+            margin-left: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #fff;
+        }
+    </style>
+    <div class="backPoint" onclick="history.back()">
+        <img src="/static/img/back.svg" style="width: 50px;height: 50px;" alt="">
+    </div>
+    <div class="login-container">
+        <h2>Admin Login</h2>
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required />
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required />
+            </div>
+            <button type="submit" class="login-btn">Login</button>
+            <p id="error-message" style="color: red;"></p>
+        </form>
+    </div>
+
+
+</body>
+<script>
+    const username = document.getElementById('username')
+    const password2 = document.getElementById('password')
+
+    document.getElementById('loginForm').addEventListener('submit', (event) => {
+        event.preventDefault()
+        var name = String(username.value).trim()
+        var password = String(password2.value).trim()
+        if (name == "admin" && password == "admin") {
+            const id = 0
+            const type = "admin"
+            sessionStorage.setItem('fromData', JSON.stringify({
+                id, type
+            }))
+            window.location.href = '/'
+        } else if (name == "") {
+            alert("Please enter your name")
+        } else if (password == "") {
+            alert("please enter your password")
+        } else {
+            alert("Invalid Crendentials")
+        }
+
+    })
+
+</script>
+
+</html>
